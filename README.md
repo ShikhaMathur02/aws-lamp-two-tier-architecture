@@ -50,7 +50,7 @@ This design reflects **real-world cloud security best practices** by isolating s
 ## 🖼️ Architecture Diagram
 The diagram below represents the logical architecture implemented in this project and explains how traffic flows between components.
 
-![AWS LAMP Two-Tier Architecture](architecture/two-tier-lamp-architecture.png)
+![AWS LAMP Two-Tier Architecture](architecture/architecturee.png)
 
 ---
 
