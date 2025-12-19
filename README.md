@@ -1,131 +1,187 @@
-# 🌐 LAMP Stack Two-Tier Architecture on AWS
-
----
+# AWS LAMP Two-Tier Architecture Project
 
 ## 📌 Project Overview
+This project implements a secure two-tier LAMP stack architecture on AWS, designed to simulate a real-world web application deployment.
 
-This project demonstrates a production-style LAMP stack (Linux, Apache, MySQL, PHP) deployed on AWS using a secure two-tier architecture.
+The primary goal of this project is to gain hands-on experience with cloud infrastructure, networking, and security by separating the web and database layers into isolated environments.
 
-The objective of this project is to gain hands-on understanding of cloud networking, server configuration, security practices, and application-to-database communication, rather than just deploying a basic web application.
+The web tier runs Apache and PHP in a public subnet, while the database tier runs MySQL in a private subnet with restricted access. The project emphasizes VPC design, traffic flow, security group configuration, and real-world troubleshooting rather than just application development.
 
 ---
 
-## 🏗️ Architecture
+## ❓ Why LAMP Stack?
+LAMP (Linux, Apache, MySQL, PHP) is a widely used and reliable web stack that helps build strong fundamentals in:
+- 🐧 Linux server administration
+- 🌐 Web server configuration
+- 🔗 Application-to-database communication
+- ☁️ Cloud-based application deployment
 
-**Client → Apache + PHP (Web EC2 – Public Subnet) → MySQL (DB EC2 – Private Subnet)**
+Understanding LAMP also provides a solid foundation for modern cloud and DevOps practices.
 
-**Infrastructure Design:**
-- Custom VPC with public and private subnets  
-- Web tier exposed to the internet  
-- Database tier isolated in a private subnet  
+---
+
+## 🏗️ Architecture Overview (Two-Tier Design)
+
+### Architecture Concept
+This project follows a **two-tier architecture**:
+
+- **Web Tier (Public Subnet)**
+  - EC2 instance running Apache and PHP
+  - Receives HTTP requests from users
+  - Exposed to the internet via Internet Gateway
+
+- **Database Tier (Private Subnet)**
+  - EC2 instance running MySQL (MariaDB)
+  - No public IP
+  - Accessible only from the Web tier
+
+### Networking Components
+- Custom VPC with CIDR planning
+- Public and private subnets
+- Internet Gateway for inbound internet access
+- NAT Gateway for outbound access from private subnet
+- Route tables to control traffic flow
+- Security Groups acting as firewalls
+
+This design reflects **real-world cloud security best practices** by isolating sensitive resources.
+
+---
+
+## 🖼️ Architecture Diagram
+The diagram below represents the logical architecture implemented in this project and explains how traffic flows between components.
+
+![AWS LAMP Two-Tier Architecture](architecture/two-tier-lamp-architecture.png)
+
+---
+
+## 🔄 Request Flow (End-to-End)
+1. User sends an HTTP request from a browser  
+2. Request reaches Apache on the Web EC2 instance  
+3. PHP processes the request  
+4. PHP connects to MySQL using the private IP  
+5. MySQL returns data to PHP  
+6. PHP sends the response back to the user  
+
+This confirms proper connectivity across network layers.
 
 ---
 
 ## 🛠️ Tools & Technologies Used
-
-**Cloud & Infrastructure:**
-- AWS EC2 (Amazon Linux 2023)  
-- AWS VPC (Subnets, Route Tables, IGW, NAT Gateway)  
-
-**Application Stack:**
-- Apache (httpd)  
-- PHP  
-- MySQL (MariaDB)  
-
-**Security & OS:**
-- AWS Security Groups & NACLs  
-- Linux (Shell & Server Administration)  
-
-**Version Control:**
-- Git & GitHub  
-
----
-
-## 🔄 Application & Infrastructure Workflow
-
-- User sends HTTP request from browser  
-- Request reaches Apache on Web EC2 (public subnet)  
-- PHP processes the request  
-- PHP connects to MySQL using private IP  
-- Database returns response  
-- PHP renders output back to the user  
+- ☁️ AWS EC2 (Amazon Linux)
+- 🌐 AWS VPC (Subnets, Route Tables, IGW, NAT Gateway)
+- 🌐 Apache (httpd)
+- 🐘 PHP
+- 🛢️ MySQL (MariaDB)
+- 🔐 AWS Security Groups
+- 🐧 Linux (Shell & Server Administration)
+- 🔧 Git & GitHub
 
 ---
 
 ## ⚙️ Setup & Configuration Summary
 
-**Networking Setup:**
-- Created a custom VPC with CIDR planning  
-- Configured public and private subnets  
-- Attached Internet Gateway and NAT Gateway  
-- Configured route tables for traffic flow  
+### 1️⃣ Networking Setup
+- Created a custom VPC with proper CIDR planning
+- Configured public and private subnets
+- Attached Internet Gateway and NAT Gateway
+- Configured route tables for controlled traffic flow
 
-**Compute & Application Setup:**
-- Launched Web EC2 and DB EC2 instances  
-- Installed and configured Apache, PHP, and MySQL  
-- Deployed PHP application  
-- Tested full CRUD operations  
+### 2️⃣ EC2 Setup
+- Launched Web EC2 instance in public subnet
+- Launched Database EC2 instance in private subnet
+- Assigned appropriate security groups
+
+### 3️⃣ Web Server Setup
+- Installed Apache (httpd)
+- Installed PHP and required extensions
+- Verified Apache and PHP functionality
+
+### 4️⃣ Database Setup
+- Installed MySQL (MariaDB)
+- Secured MySQL installation
+- Created database, tables, and a restricted DB user
+
+### 5️⃣ Application Deployment
+- Deployed PHP application
+- Configured database connectivity
+- Tested CRUD operations
 
 ---
 
 ## 🔐 Security Practices Implemented
+- Database EC2 has **no public IP**
+- MySQL access restricted to Web Security Group only
+- Least-privilege database user created
+- SSH access restricted and used temporarily
+- Proper file permissions for web application
+- Network isolation using public and private subnets
 
-- Database EC2 has no public IP  
-- MySQL access restricted to Web Security Group only  
-- Least-privilege database user created  
-- SSH access restricted and used temporarily  
-- Proper file permissions for web application  
-- Network isolation using subnets and route tables  
+These practices align with **real-world cloud security standards**.
+
+---
+
+## ✅ Verification & Testing
+The following validations were performed:
+- Apache accessible via browser
+- PHP execution verified
+- MySQL service running
+- PHP to MySQL connectivity tested
+- Data insert, update, delete, and fetch operations verified
+- Private subnet isolation confirmed
 
 ---
 
 ## 🚧 Challenges Faced & How I Resolved Them
 
 🔹 **SSH Key Permission Error**  
-- Issue: SSH connection failed due to insecure private key permissions  
-- Solution: Corrected key permissions using `chmod 400 lamp-keyy.pem`  
+Issue: SSH connection failed due to insecure private key permissions  
+Solution: Corrected key permissions using `chmod 400 lamp-keyy.pem`
 
 🔹 **SSH Access Worked with 0.0.0.0/0 but Not with My IP**  
-- Issue: SSH connection failed when restricted to my public IP  
-- Solution: Temporarily allowed 0.0.0.0/0 to debug, verified connectivity, and understood source IP handling in Security Groups  
+Issue: SSH connection failed when restricted to my public IP  
+Solution: Temporarily allowed 0.0.0.0/0 to debug, verified connectivity, and understood source IP handling in Security Groups
 
 🔹 **HTTP vs HTTPS Access Issue**  
-- Issue: Website not accessible using HTTPS  
-- Solution: Verified Apache was configured only for HTTP (port 80) and accessed the application using HTTP  
+Issue: Website not accessible using HTTPS  
+Solution: Verified Apache was configured only for HTTP (port 80) and accessed the application using HTTP
 
 🔹 **Website Not Reachable from Browser**  
-- Issue: Apache was running but the site did not load in the browser  
-- Solution: Fixed missing HTTP (port 80) inbound rule in the Web Security Group  
+Issue: Apache was running but the site did not load in the browser  
+Solution: Fixed missing HTTP (port 80) inbound rule in the Web Security Group
 
 🔹 **PHP Not Executing Issue**  
-- Issue: PHP files were downloading instead of executing  
-- Solution: Installed missing PHP packages and MySQL PHP driver, then restarted Apache  
+Issue: PHP files were downloading instead of executing  
+Solution: Installed missing PHP packages and MySQL PHP driver, then restarted Apache
 
 🔹 **Private Database Connectivity Issue**  
-- Issue: PHP application could not connect to the MySQL database  
-- Solution: Configured Security Group–to–Security Group rule allowing port 3306 from Web EC2 to DB EC2  
+Issue: PHP application could not connect to the MySQL database  
+Solution: Configured Security Group–to–Security Group rule allowing port 3306 from Web EC2 to DB EC2
 
 🔹 **Private Subnet Internet Access Issue**  
-- Issue: Database EC2 could not access the internet for package installation  
-- Solution: Created a NAT Gateway and updated the private route table  
+Issue: Database EC2 could not access the internet for package installation  
+Solution: Created a NAT Gateway and updated the private route table
 
 🔹 **File Permission Issue in Web Directory**  
-- Issue: Apache could not read PHP files properly  
-- Solution: Updated file permissions under `/var/www/html`  
+Issue: Apache could not read PHP files properly  
+Solution: Updated file permissions under `/var/www/html`
 
 ---
 
-## ✅ Final Outcome
+## 🧠 Key Learnings
+- Designing secure two-tier cloud architecture
+- Importance of subnet isolation
+- Difference between Security Groups and NACLs
+- Real-world cloud debugging approach
+- Application and infrastructure dependency
 
-- Apache and PHP successfully serving web requests  
-- MySQL securely running in private subnet  
-- PHP application connected to database  
-- Full CRUD operations verified  
-- Secure two-tier LAMP architecture achieved  
+---
+
+## 🧾 Conclusion
+This project provided hands-on experience in building and operating a secure two-tier LAMP stack on AWS.  
+It reflects a production-style approach to cloud infrastructure rather than a simple tutorial-based setup.
 
 ---
 
 ## 👩‍💻 Author
-
 **Shikha Mathur**  
-*Aspiring Cloud & DevOps Engineer*
+Aspiring Cloud & DevOps Engineer
